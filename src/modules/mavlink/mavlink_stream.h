@@ -49,10 +49,10 @@ class MavlinkStream
 {
 
 public:
-	MavlinkStream *next;
+	MavlinkStream *next{nullptr};
 
 	MavlinkStream(Mavlink *mavlink);
-	virtual ~MavlinkStream();
+	virtual ~MavlinkStream() = default;
 
 	/**
 	 * Get the interval
@@ -97,11 +97,9 @@ public:
 
 protected:
 	Mavlink     *_mavlink;
-	int _interval;		///< if set to negative value = unlimited rate
+	int _interval{1000000};		///< if set to negative value = unlimited rate
 
-#ifndef __PX4_QURT
 	virtual bool send(const hrt_abstime t) = 0;
-#endif
 
 	/**
 	 * Function to collect/update data for the streams at a high rate independant of
@@ -112,7 +110,7 @@ protected:
 	virtual void update_data() { }
 
 private:
-	hrt_abstime _last_sent;
+	hrt_abstime _last_sent{0};
 
 	/* do not allow top copying this class */
 	MavlinkStream(const MavlinkStream &);
